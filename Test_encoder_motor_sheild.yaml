@@ -1,0 +1,66 @@
+esphome:
+  name: test_encoder_motor
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  networks:
+    - ssid: "HomeLink"
+      password: "Iacob1988"
+    - ssid: "tazi"
+      password: "741482483"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Test-Encoder-Motor"
+    password: "1234567890"
+web_server:
+  port: 80
+captive_portal:
+
+# Enable logging
+logger:
+
+sensor:
+  - platform: rotary_encoder
+    id: motor_encoder
+    name: "Rotary Encoder"
+    pin_a: D5
+    pin_b: D6
+    # on_raw_value:
+    #   - if:
+    #       condition:
+    #         lambda: |-
+    #           return (id(motor_encoder).state < -2000 && id(close_cover).state ) || ( id(motor_encoder).state > 2000 && id(open_cover).state);
+    #       then:
+    #         - switch.turn_off: open_cover
+    #         - switch.turn_off: close_cover
+
+switch:
+- platform: gpio
+  id: direction_pin
+  name: "Direction"
+  pin: D3
+  
+
+output:
+- platform: esp8266_pwm
+  pin: D1
+  frequency: 5000 Hz
+  id: speed_pin
+fan:
+  - platform: speed
+    id: motor
+    output: speed_pin
+    name: "Living Room Fan"
+    speed:
+      low: 0.30
+      medium: 0.5
+      high: 1
+
+# Enable Home Assistant API
+api:
+  password: "Iacob1988"
+
+ota:
+  password: "Iacob1988"
